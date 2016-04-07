@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="shortcut icon" type="image/ico" href="http://www.datatables.net/favicon.ico">
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
+
+	<title>DataTables net</title>
+	<link rel="stylesheet" type="text/css" href="../../media/css/jquery.dataTables.css">
+	<!--<link rel="stylesheet" type="text/css" href="../resources/syntax/shCore.css">
+	<link rel="stylesheet" type="text/css" href="../resources/demo.css"> 
+	<link rel="stylesheet" href="../../../stylesheets/layout.css"> 
+	<link rel="stylesheet" href="../../../stylesheets/skeleton.css">
+	<link rel="stylesheet" href="../../../stylesheets/responsivemobilemenu.css">
+	<link rel="stylesheet" href="../../../stylesheets/flexslider.css">
+	<link rel="stylesheet" href="../../../stylesheets/prettyPhoto.css"> -->
+	<link rel="stylesheet" href="../../../stylesheets/base.css">
+	<!--<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,300,700,600' rel='stylesheet' type='text/css'> -->
+	<style type="text/css" class="init">
+   
+
+td.details-control {
+	background: url('../resources/details_open.png') no-repeat center center;
+	cursor: pointer;
+}
+tr.shown td.details-control {
+	background: url('../resources/details_close.png') no-repeat center center;
+}
+
+	</style>
+	
+	<script type="text/javascript" language="javascript" src="jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" language="javascript" src="../../media/js/jquery.dataTables.js"></script>
+	<!--<script type="text/javascript" language="javascript" src="../resources/syntax/shCore.js"></script>
+	<script type="text/javascript" language="javascript" src="../resources/demo.js"></script> -->	
+	<script type="text/javascript" src="../../../javascripts/script.js"></script> 
+	
+	<script type="text/javascript" language="javascript" class="init">
+
+
+/* Formatting function for row details - modify as you need */
+function format ( d ) {
+	
+			
+	return '<table width="100px" border="1">'+
+		'<tr align="center" valign="center">'+
+		        '<td colspan=2><img src="' + d.photo + '" onerror=this.src="../resources/nopic.jpg" height=100 ></td>' +   		       
+		        '</tr><tr><td><a href="' + d.page + '" target="_blank" style="color: #BF5A24">Website</a></td><td>' +
+		 '<a onclick="opmap(' + d.lat + ',' + d.long + ',\'' + d.companyname + '\')" style="color: #BF5A24">Map</a></td>' + 
+	         '</tr>'+		
+		
+	'</table>';
+	
+}
+
+function opmap(lat,lon,inf) { 
+        $(document).ready(function() {
+             parent.initMap(lat,lon,inf,0);
+             });
+       }
+
+$(document).ready(function() {
+
+
+        var urlpath ="../../../makej.php";
+        
+	var table = $('#founders').DataTable( { "bLengthChange": false, "bFilter": false,
+		"ajax": { "url": urlpath  }, 
+		  
+		"columns": [
+			{
+				"className":      'details-control',
+				"orderable":      false,
+				"data":           null,
+				"defaultContent": ''
+			},
+			{ "data": "id","defaultContent": " - ", "className":      'details-control' },			
+			{ "data": "companyname", "className":      'details-control' },
+			{ "data": "founder", "className":      'details-control' },			
+			{ "data": "city", "className":      'details-control' },
+			{ "data": "country", "className":      'details-control' },
+			{ "data": "postal", "className":      'details-control' },
+			{ "data": "street", "className":      'details-control' },			
+			{ "data": "page", "className":      'details-control' }			
+		],
+		"order": [[1, 'asc']]
+	} );
+	
+		
+	// Add event listener for opening and closing details
+	$('#founders tbody').on('click', 'td.details-control', function () {
+		var tr = $(this).closest('tr');
+		var row = table.row( tr );
+
+		if ( row.child.isShown() ) {		        
+			// This row is already open - close it
+			row.child.hide();
+			tr.removeClass('shown');
+		}
+		else {
+			// Open this row
+			if(window.rw) window.rw.child.hide();
+			if(window.trt) window.trt.removeClass('shown');
+			
+			window.rw=row;
+			window.trt=tr;
+			row.child( format(row.data()) ).show();
+			tr.addClass('shown');
+		}
+		
+	} );
+	
+	
+	
+} );
+
+ 
+	</script>
+</head>
+
+<!--#BF5A24 -->
+<body class="dt-example" style="background-color: transparent;">
+
+  
+
+  <table id="founders" class="display" cellspacing="0" width="100%" align="center">
+				<thead style="color:#ffffff">
+					<tr>
+						<th></th>
+						<th>ID</th>	
+						<th>Company Name</th>					
+						<th>Founders</th>
+						<th>City</th>						
+						<th>Country</th>
+						<th>Postal Code</th>
+						<th>Street</th>
+						<th>Web page</th>
+					</tr>
+				</thead>
+				
+                                <tbody align="center">
+                                        <tr>
+                                                <th></th>
+						<th>ID</th>	
+						<th>Company Name</th>					
+						<th>Founders</th>
+						<th>City</th>						
+						<th>Country</th>
+						<th>Postal Code</th>
+						<th>Street</th>
+						<th>Web page</th>
+                                       </tr>
+                                </tbody>
+                                
+				<tfoot style="color:#ffffff">
+					<tr>
+						<th></th>
+						<th>ID</th>	
+						<th>Company Name</th>					
+						<th>Founders</th>
+						<th>City</th>						
+						<th>Country</th>
+						<th>Postal Code</th>
+						<th>Street</th>
+						<th>Web page</th>						
+					</tr>
+				</tfoot>
+			</table>
+
+
+
+</body>
+</html>

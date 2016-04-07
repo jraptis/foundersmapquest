@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="en"> <!--<![endif]-->
+<head>
+
+	<!-- Basic Page Needs
+  ================================================== -->
+	<meta charset="utf-8">
+	<title>Founders Map Quest</title>
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<!-- Mobile Specific Metas
+  ================================================== -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<!-- CSS
+  ================================================== -->
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,300,700,600' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="stylesheets/base.css">
+	<link rel="stylesheet" href="stylesheets/skeleton.css">
+	<link rel="stylesheet" href="stylesheets/layout.css">	
+	<link rel="stylesheet" href="stylesheets/responsivemobilemenu.css">
+	<link rel="stylesheet" href="stylesheets/flexslider.css">
+	<link rel="stylesheet" href="stylesheets/prettyPhoto.css">
+	
+	
+	<!-- JS
+  ================================================== -->
+	
+	<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="javascripts/responsivemobilemenu.js"></script>
+	<script type="text/javascript" src="javascripts/jquery.flexslider.js"></script>
+	<!--<script type="text/javascript" src="javascripts/jquery.testemonialslider.js"></script> -->
+	<script type="text/javascript" src="javascripts/jquery.easing.1.3.js"></script>
+	<script type="text/javascript" src="javascripts/jquery.prettyPhoto.js"></script>
+	<script type="text/javascript" src="javascripts/jquery.quicksand.js"></script> 
+	
+	<script type="text/javascript" src="javascripts/script.js"></script> 
+	
+	<!-- SMOOTH SCROLLING -->
+<script type="text/javascript" src="javascripts/smoothscroll.js"></script>
+
+
+	<!--[if lt IE 9]>
+		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+
+	<!-- Favicons
+	================================================== -->
+	<link rel="shortcut icon" href="images/fav.png">
+	<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+
+ 	
+	<script>
+  
+
+  $.get("tb.php", null,function(data)
+{        
+    $("#edw").html(data);   
+    
+});
+
+  $.get("rec.php", null,function(data)
+{        
+    $("#rec").html(data);   
+    
+});
+
+function new_entry(){
+
+var posting = $.post("entry.php", { companyname: $( "#commentForm" ).find( "input[name='companyname']" ).val(),
+                                    founder: $( "#commentForm" ).find( "input[name='founder']" ).val(),
+                                    city: $( "#commentForm" ).find( "input[name='city']" ).val(),
+                                    country: $( "#commentForm" ).find( "input[name='country']" ).val(),
+                                    postal: $( "#commentForm" ).find( "input[name='postal']" ).val(),
+                                    street: $( "#commentForm" ).find( "input[name='street']" ).val(),
+                                    photo: $( "#commentForm" ).find( "input[name='photo']" ).val(),
+                                    page: $( "#commentForm" ).find( "input[name='page']" ).val(),
+                                    lat: $( "#commentForm" ).find( "input[name='lat']" ).val(),
+                                    long: $( "#commentForm" ).find( "input[name='long']" ).val()
+                                    }).done(function(data) { if(data=="ok") {
+                                                              $.get("tb.php", null,function(data){ $("#edw").html(data); }); 
+                                                              $.get("rec.php", null,function(data){$("#rec").html(data);});
+                                                              $("#mesdone").fadeIn(1);
+                                                              $("#mesdone").text('Done!');
+                                                              setTimeout( function(){                                                               
+                                                              $("#mesdone").fadeOut(3000);
+                                                              $("#mesdone").text('');},1000);
+                                                              } else alert(data);});
+}
+  
+</script>
+
+<script>
+ var platout=38.0075208;
+ var plongout=23.7335321;
+ var infoout="Bob's Place";
+ var mapg=false;
+ var styles = [
+  {
+    stylers: [
+      { hue: "#00ffe6" },
+      { saturation: -20 },
+      { "lightness": -24 }
+    ]
+  }
+];
+ function initMap(plat,plong,info,typer) {
+        
+        if (!typer) {
+          if(!plat || !plong) { plat=platout; plong=plongout; info=infoout;} else {              
+              $("html, body").animate({ scrollTop: $("#ht").offset().top }, "slow"); 
+              $(document.getElementById('map')).animate({height:"100%"},500);
+              setTimeout( function(){ findncntr(3);},501);
+              setTimeout( function(){ 
+                                  $(document.getElementById('map')).animate({height:"25%"},500);
+                                  setTimeout(function(){ findncntr(9);},501);
+                                  },4000);}
+                                  
+          platout=plat;
+          plongout=plong;
+          infoout=info;          
+        } else {                    
+            plat=platout;
+            plong=plongout;   
+            info=infoout;
+            if(mapg==true) {  
+              $("html, body").animate({ scrollTop: $("#ht").offset().top }, "slow"); 
+              $(document.getElementById('map')).animate({height:"100%"},500);
+              setTimeout( function(){ findncntr(3); },501); 
+              mapg=false;              
+              } else {  
+                    $("html, body").animate({ scrollTop: $("#ht").offset().top }, "slow");                                     
+                    $(document.getElementById('map')).animate({height:"25%"},500);
+                    setTimeout(function(){ findncntr(9);},501);                    
+                    mapg=true;                   
+                    }
+            
+            }
+        var myLatLng = {lat: plat, lng: plong};
+        
+        function findncntr(z){
+           var map = new google.maps.Map(document.getElementById('map'), {
+               zoom: z,
+               center: myLatLng,          
+               scrollwheel: false
+               });   
+
+           map.setOptions({styles: styles});
+        
+           setTimeout( function(){ 
+               var marker = new google.maps.Marker({
+                   position: myLatLng,
+                   map: map,
+                   title: info
+                   });         
+               },500);
+           }                       
+        findncntr(3);        
+        }  
+ 
+ 
+     function goedw() {      
+        $("html, body").animate({ scrollTop: $("#edw").offset().top - 100}, "slow");      
+        }  
+        
+     function gocon() {      
+        $("html, body").animate({ scrollTop: $("#contactform").offset().top - 100}, "slow");      
+        } 
+     function gorec() {      
+        $("html, body").animate({ scrollTop: $("#team").offset().top - 100}, "slow");      
+        }
+        
+     function gohom() {      
+        $("html, body").animate({ scrollTop: $("#ht").offset().top - 100}, "slow");   
+        $(document.getElementById('map')).animate({height:"25%"},500);
+                    setTimeout(function(){ findncntr(9);},501);                    
+                    mapg=true; 
+        function findncntr(z){var map = new google.maps.Map(document.getElementById('map'), {zoom: z,center: {lat: platout, lng: plongout},scrollwheel: false});
+        map.setOptions({styles: styles});
+        setTimeout( function(){ var marker = new google.maps.Marker({position: {lat: platout, lng: plongout},map: map,title: infoout});},500);}
+        }  
+           
+ function frecentmap(lat,long,info) {
+   $(document).ready(function() {
+             parent.initMap(lat,long,info,0);
+             });
+ 
+ }
+ 
+
+
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFyWqsGryJ5kODATi3nxKru5VFx6Nb8R0&callback=initMap"></script>
+</head>
+<body>
+
+<!-- Primary Page Layout
+================================================== -->
+<div class="top" style="right:50px;">
+    <a href="#ht"><img id="rotate" src="images/top.png" width="70" height="70" alt="top" /></a>
+</div>
+
+<header id="ht" style="height:100px">
+
+<div class="container" id="home" style=" z-index:9999; width:100%; position:fixed; background-color:#509fa3; background-size:100%; background-repeat: no-repeat; ">
+      <div class="three columns logo" style="width:400">
+         <img src="./images/logo_jr.png" alt"" style="width:100%">
+      </div>
+      <div class="thirteen columns navigation">
+        <nav>
+          <div class='rmm' data-menu-style = "minimal">
+            <ul>
+                <li><a href="javascript:gohom()">Home</a></li>
+                <li><a href="javascript:initMap(platout,plongout,infoout,1)" id="mpbtn">Toggle Map</a></li>
+                <li><a href="javascript:gorec()">Recent</a></li>
+                <li><a href="javascript:goedw()">Entries</a></li>                
+                <li><a href="javascript:gocon()">Join</a></li>  
+                <li><a href='#portfolio'>Contact</a></li>               
+            </ul>
+          </div>
+        </nav>
+        <br>
+      </div>
+     </div>
+</div>
+</header>
+
+<div class="slider" id="home"></div>   
+
+<div id="map" style="height: 100%; position:relative; "></div>  
+
+<div class="service" id="team">
+    <div class="container">    
+        <div class="sixteen columns">        
+         <h2 class="white center">Recent Additions</h2>
+         <hr class="white center">
+         <p class="white center">Recently added startups.</p>
+         <div id="rec" class="white center"> </div>
+        </div>        
+    </div>
+</div>
+
+<div id="edw" class="skills" style="overflow:visible; background-color: #BF5A24; background-size:100%; background-repeat: no-repeat; top:-25px;" > </div>
+
+<div id="contactform">
+  <div class="container">
+   <div class="sixteen columns">
+         <h2 class="white">Add your Start-up</h2>
+         <hr>
+         <p class="white center">So everyone can see you!</p>
+         <hr class="white">
+    
+   </div>         
+       <div class="two-thirds column form"> 
+            <form action="javascript:new_entry()" id="commentForm" method="post" name="commentForm">
+                    <input class="required name" id="name" name="companyname" type="text" value="Company Name" required onFocus="if(this.value=='Company Name') this.value=''" onfocusout="if(this.value=='') this.value='Company Name'"/> 
+                    <input class="required name" id="founder" name="founder" type="text" value="Founder" required onFocus="if(this.value=='Founder') this.value=''" onfocusout="if(this.value=='') this.value='Founder'"/>
+                    <input class="required name" id="city" name="city" type="text" value="City" required onFocus="if(this.value=='City') this.value=''" onfocusout="if(this.value=='') this.value='City'"/>
+                    <input class="required name" id="country" name="country" type="text" value="Country" required onFocus="if(this.value=='Country') this.value=''" onfocusout="if(this.value=='') this.value='Country'"/>
+                    <input class="required name" id="postal" name="postal" type="text" value="Postal Code" required onFocus="if(this.value=='Postal Code') this.value=''" onfocusout="if(this.value=='') this.value='Postal Code'"/>
+                    <input class="required name" id="street" name="street" type="text" value="Street Address" required onFocus="if(this.value=='Street Address') this.value=''" onfocusout="if(this.value=='') this.value='Street Address'"/>
+                    <input class="website" id="photo" name="photo" type="text" value="Photo Link" required onFocus="if(this.value=='Photo Link') this.value=''" onfocusout="if(this.value=='') this.value='Photo Link'"/> 
+                    <input class="website" id="page" name="page" type="text" value="Website" required onFocus="if(this.value=='Website') this.value=''" onfocusout="if(this.value=='') this.value='Website'"/>
+                    <input class="phone" id="lat" name="lat" type="text" value="Latitude" required onFocus="if(this.value=='Latitude') this.value=''" onfocusout="if(this.value=='') this.value='Latitude'"/>
+                    <input class="phone" id="long" name="long" type="text" value="Longitude" required onFocus="if(this.value=='Longitude') this.value=''" onfocusout="if(this.value=='') this.value='Longitude'"/>                    
+                    <button class="btn">Add Entry</button> <br><br><p id="mesdone" style="color:#00cc00"></p>  
+             </form>
+                    
+      </div>
+         <div class="one-third column omega coninfo">
+            <br><br><br><br><br><br><br><br><img src="images/startup-gears.jpg" width="100%">         
+         </div>
+   </div>
+</div>
+
+<div id="portfolio">
+   <div class="container">
+       <div class="sixteen columns">
+        <h2>Contact</h2>
+         <hr>
+         <p class="center">Ioannis A. Raptis</p> 
+	   <address><ul class="portfolio"> 
+		<li  data-id="id-1" data-type="webdesign">
+			<a href="mailto:raptis.y@gmail.com" rel="prettyPhoto[portfolio]"><img src="images/profile/gmail.png" class="scale-with-grid hov" alt="" width="120px"/></a>
+		</li> 
+		<li  data-id="id-2" data-type="webdesign">
+			<a href="https://www.facebook.com/john.raptis.xsoz" rel="prettyPhoto[portfolio]"><img src="images/profile/fb.png" class="scale-with-grid hov" alt="" width="120px"/></a>
+		</li>
+		<li data-id="id-3" data-type="webdesign branding">
+			<a href="https://github.com/jraptis" rel="prettyPhoto[portfolio]"><img src="images/profile/git.gif" class="scale-with-grid hov" alt="" width="120px"/></a>
+		</li>
+		<li data-id="id-4" data-type="webdesign branding">
+			<a href="https://www.linkedin.com/in/john-raptis-b5998621?trk=nav_responsive_tab_profile" rel="prettyPhoto[portfolio]"><img src="images/profile/ln.png" class="scale-with-grid hov" alt="" width="120px"/></a>
+		</li>
+		<li data-id="id-5" data-type="branding">
+			<a href="http://athens.theodi.org/about/our-team/" rel="prettyPhoto[portfolio]"><img src="images/profile/odi.png" class="scale-with-grid hov" alt="" width="160px"/></a>
+		</li>
+		<li data-id="id-6" data-type="printdesign">
+			<a href="http://xsoz.gr/" rel="prettyPhoto[portfolio]"><img src="images/profile/xsoz.jpg" class="scale-with-grid hov" alt="" width="160px"/></a>
+		</li>
+	  </ul></address>
+   </div>
+  </div>
+</div>
+
+
+<!-- End Document
+================================================== -->
+
+<script type="text/javascript">
+  $(window).load(function() {
+     $('.flexslider').flexslider({
+        animation: "slide"
+      });
+});
+</script>
+	
+	<script type="text/javascript" charset="utf-8">
+		$(document).ready(function(){
+			$("a[rel^='prettyPhoto']").prettyPhoto({
+				social_tools: false,
+				theme: 'light_square'
+			});
+		});
+	</script>
+
+</body>
+</html>
